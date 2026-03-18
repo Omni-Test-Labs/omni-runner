@@ -30,11 +30,11 @@ pub struct DeviceConfig {
 #[derive(Debug, Deserialize, Clone)]
 pub struct PollingConfig {
     /// Interval between task polling attempts (seconds)
-    #[serde(default = "5")]
+    #[serde(default = "default_interval_seconds")]
     pub interval_seconds: u64,
-    
+
     /// Interval between heartbeat reports (seconds)
-    #[serde(default = "30")]
+    #[serde(default = "default_heartbeat_interval_seconds")]
     pub heartbeat_interval_seconds: u64,
 }
 
@@ -42,13 +42,18 @@ pub struct PollingConfig {
 #[derive(Debug, Deserialize, Clone)]
 pub struct ExecutionConfig {
     /// Base directory for task execution workspace
-    #[serde(default = "./workspace")]
+    #[serde(default = "default_workspace_dir")]
     pub workspace_dir: PathBuf,
-    
+
     /// Base directory for task logs
-    #[serde(default = "./logs")]
+    #[serde(default = "default_log_dir")]
     pub log_dir: PathBuf,
 }
+
+fn default_interval_seconds() -> u64 { 5 }
+fn default_heartbeat_interval_seconds() -> u64 { 30 }
+fn default_workspace_dir() -> PathBuf { PathBuf::from("./workspace") }
+fn default_log_dir() -> PathBuf { PathBuf::from("./logs") }
 
 /// Complete omni-runner configuration
 #[derive(Debug, Deserialize)]
