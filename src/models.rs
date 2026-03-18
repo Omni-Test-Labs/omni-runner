@@ -299,7 +299,7 @@ pub struct OobLog {
     pub summary: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SystemState {
     pub uptime_seconds: u64,
     pub load_average: Vec<f64>,
@@ -307,13 +307,33 @@ pub struct SystemState {
     pub memory_usage_percent: f64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+impl Default for SystemState {
+    fn default() -> Self {
+        Self {
+            uptime_seconds: 0,
+            load_average: vec![0.0, 0.0, 0.0],
+            disk_usage_percent: 0.0,
+            memory_usage_percent: 0.0,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Forensics {
     #[serde(default)]
     pub oob_logs: Vec<OobLog>,
 
     #[serde(default)]
     pub system_state: SystemState,
+}
+
+impl Default for Forensics {
+    fn default() -> Self {
+        Self {
+            oob_logs: Vec::new(),
+            system_state: SystemState::default(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
