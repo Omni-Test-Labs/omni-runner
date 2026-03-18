@@ -1,0 +1,27 @@
+# omni-runner Configuration Example
+
+[server]
+# Base URL of the omni-server API
+base_url = "http://localhost:8000"
+# API key for authentication (optional if server doesn't require auth)
+api_key = "your-api-key-here"
+
+[device]
+# Unique device identifier (generate a UUID V4 for each device)
+device_id = "550e8400-e29b-41d4-a716-446655440000"
+# Device type: pc, mobile, iot, server
+device_type = "pc"
+# Device hostname for identification
+hostname = "test-node-001"
+
+[polling]
+# Interval between task polling attempts (in seconds)
+interval_seconds = 5
+# Interval between heartbeat reports (in seconds)
+heartbeat_interval_seconds = 30
+
+[execution]
+# Base directory for task execution workspace
+workspace_dir = "/workspace/tmp"
+# Base directory for task logs
+log_dir = "/workspace/logs"
