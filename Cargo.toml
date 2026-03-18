@@ -36,5 +36,8 @@ chrono = { version = "0.4", features = ["serde"] }
 # Command parsing
 shlex = "1"
 
+# Async traits
+async-trait = "0.1"
+
 [dev-dependencies]
 tokio-test = "0.4"
