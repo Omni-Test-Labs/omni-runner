@@ -17,7 +17,7 @@ omni-runner 的 Pipeline Engine 是**本地执行编排**引擎，负责：
 - 步骤调度（选择合适的 executor）
 - 流程控制（must_pass, always_run, failure_policy）
 
-这**不是** "定义 pipeline"，而是 "控制如何按照定义执行 pipeline"。Server 定义 pipeline 结构，Runner 控制本地执行流程。详见 `/docs/architecture.md`。
+这**不是** "定义 pipeline"，而是 "控制如何按照定义执行 pipeline"。Server 定义 pipeline 结构，Runner 控制本地执行流程。详见 https://github.com/Omni-Test-Labs/docs/blob/main/architecture.md。
 
 ## 架构
 
