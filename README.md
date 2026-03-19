@@ -6,6 +6,19 @@
 
 "管生管死不管过程" - 负责 Pipeline 的调度、分配与执行状态管理，不干预内部执行细节。
 
+## Pipeline 引擎说明
+
+**为什么 omni-runner 包含 pipeline 引擎？**
+
+omni-runner 的 Pipeline Engine 是**本地执行编排**引擎，负责：
+- 解析 Server 下发的 TaskManifest 配置
+- 拓扑排序（确定步骤执行顺序）
+- 依赖管理（depends_on 检查）
+- 步骤调度（选择合适的 executor）
+- 流程控制（must_pass, always_run, failure_policy）
+
+这**不是** "定义 pipeline"，而是 "控制如何按照定义执行 pipeline"。Server 定义 pipeline 结构，Runner 控制本地执行流程。详见 `/docs/architecture.md`。
+
 ## 架构
 
 ### 核心模块
