@@ -4,8 +4,9 @@ use std::collections::HashSet;
 use crate::models::{PipelineStep, SecurityPolicy};
 
 pub struct PolicyValidator {
-    forbidden_commands: HashSet<String>,
+    pub forbidden_commands: HashSet<String>,
     allowed_dirs: Vec<String>,
+    allow_sudo: bool,
 }
 
 impl PolicyValidator {
@@ -17,6 +18,7 @@ impl PolicyValidator {
                 .cloned()
                 .collect(),
             allowed_dirs: global_policy.allowed_dirs.clone(),
+            allow_sudo: global_policy.allow_sudo,
         }
     }
     
@@ -28,6 +30,9 @@ impl PolicyValidator {
     
     fn validate_command(&self, cmd: &str) -> Result<()> {
         if let Some(first_word) = cmd.split_whitespace().next() {
+            if first_word == "sudo" && !self.allow_sudo {
+                anyhow::bail!("Sudo is not allowed: {}", first_word);
+            }
             if self.forbidden_commands.contains(first_word) {
                 anyhow::bail!("Forbidden command: {}", first_word);
             }

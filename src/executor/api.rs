@@ -3,6 +3,7 @@ use reqwest::Client as HttpClient;
 
 use crate::models::{PipelineStep, StepResult};
 
+#[derive(Debug)]
 pub struct ApiExecutor;
 
 impl ApiExecutor {

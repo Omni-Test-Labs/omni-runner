@@ -7,6 +7,7 @@ use tracing::{info, warn};
 use crate::models::{PipelineStep, StepResult, TaskStatus};
 
 /// Shell command executor
+#[derive(Debug)]
 pub struct ShellExecutor;
 
 impl ShellExecutor {

@@ -4,6 +4,7 @@ use tokio::process::Command;
 
 use crate::models::{PipelineStep, StepResult};
 
+#[derive(Debug)]
 pub struct BinaryExecutor;
 
 impl BinaryExecutor {

@@ -60,14 +60,23 @@ fn default_log_dir() -> PathBuf { PathBuf::from("./logs") }
 pub struct RunnerConfig {
     pub server: ServerConfig,
     pub device: DeviceConfig,
+    #[serde(default)]
     pub polling: PollingConfig,
+    #[serde(default)]
     pub execution: ExecutionConfig,
 }
 
 /// Load configuration from a TOML file
 pub fn load_config(config_path: &str) -> Result<RunnerConfig> {
+    use config::FileFormat;
+
+    let path = std::path::Path::new(config_path);
     let config = config::Config::builder()
-        .add_source(config::File::with_name(config_path).required(true))
+        .add_source(
+            config::File::from(path)
+                .format(FileFormat::Toml)
+                .required(true)
+        )
         .build()
         .with_context(|| format!("Failed to load configuration from {}", config_path))?;
 

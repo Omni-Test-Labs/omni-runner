@@ -29,16 +29,26 @@ pub enum TaskStatus {
     Skipped,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RetryPolicy {
     #[serde(default = "default_retries")]
     pub max_retries: u32,
-    
+
     #[serde(default = "default_delay")]
     pub retry_delay_seconds: u64,
-    
+
     #[serde(default = "default_backoff")]
     pub backoff_multiplier: f64,
+}
+
+impl Default for RetryPolicy {
+    fn default() -> Self {
+        Self {
+            max_retries: 0,
+            retry_delay_seconds: 5,
+            backoff_multiplier: 2.0,
+        }
+    }
 }
 
 fn default_retries() -> u32 { 0 }

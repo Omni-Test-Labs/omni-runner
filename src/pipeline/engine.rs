@@ -23,6 +23,7 @@ impl PipelineEngine {
         let mut results: Vec<StepResult> = Vec::new();
         let mut dependency_map: HashMap<String, Vec<String>> = HashMap::new();
         let mut completed_steps: std::collections::HashSet<String> = std::collections::HashSet::new();
+        let mut failed_must_pass: bool = false;
 
         for step in &manifest.pipeline {
             if !step.depends_on.is_empty() {
@@ -33,6 +34,10 @@ impl PipelineEngine {
         let ordered_steps = self.topological_sort(&manifest.pipeline)?;
 
         for step in ordered_steps {
+            if failed_must_pass && step.depends_on.is_empty() {
+                break;
+            }
+
             if !self.can_execute_step(&step, &completed_steps, &dependency_map) {
                 results.push(StepResult {
                     step_id: step.step_id.clone(),
@@ -81,15 +86,15 @@ impl PipelineEngine {
             
             let executor = self.get_executor(&step)?;
             let result = executor.execute(&step).await?;
-            
-            let success = result.status == TaskStatus::Success;
+
             completed_steps.insert(step.step_id.clone());
-            
-            results.push(result);
-            
+
+            let success = result.status == TaskStatus::Success;
             if !success && step.must_pass {
-                break;
+                failed_must_pass = true;
             }
+
+            results.push(result);
         }
         
         Ok(results)
@@ -150,13 +155,18 @@ impl PipelineEngine {
         }
 
         let mut result = Vec::new();
-        let mut queue: Vec<String> = pipeline
+        let mut initial_steps: Vec<&PipelineStep> = pipeline
             .iter()
             .filter(|s| s.depends_on.is_empty())
+            .collect();
+        initial_steps.sort_by_key(|s| s.order);
+
+        let mut queue: std::collections::VecDeque<String> = initial_steps
+            .into_iter()
             .map(|s| s.step_id.clone())
             .collect();
 
-        while let Some(current_id) = queue.pop() {
+        while let Some(current_id) = queue.pop_front() {
             if let Some(step) = pipeline.iter().find(|s| s.step_id == current_id) {
                 result.push(step.clone());
             }
@@ -166,7 +176,7 @@ impl PipelineEngine {
                     if let Some(degree) = in_degree.get_mut(&next_id) {
                         *degree -= 1;
                         if *degree == 0 {
-                            queue.push(next_id);
+                            queue.push_back(next_id);
                         }
                     }
                 }

@@ -5,6 +5,7 @@ use tokio::process::Command;
 use crate::models::{PipelineStep, StepResult};
 
 /// Python script executor
+#[derive(Debug)]
 pub struct PythonExecutor;
 
 impl PythonExecutor {
